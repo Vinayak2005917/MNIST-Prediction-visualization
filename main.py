@@ -38,9 +38,13 @@ st.markdown("""
         padding: 0px 12px;
     }
     .stMetric {
-        background-color: #f0f2f6;
-        padding: 0.5rem;
-        border-radius: 0.5rem;
+        background-color: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+    .stMetric > div {
+        background-color: transparent !important;
+        border: none !important;
     }
     .stDataFrame {
         font-size: 0.8rem;
@@ -133,11 +137,7 @@ with col2:
             max_probability = max(probabilities)
             
             # Display prediction in compact format
-            col_pred, col_conf = st.columns(2)
-            with col_pred:
-                st.metric("Predicted Digit", predicted_digit)
-            with col_conf:
-                st.metric("Confidence", f"{max_probability:.1%}")
+            st.success(f"**Predicted Digit: {predicted_digit}** (Confidence: {max_probability:.1%})")
             
             # Create and display smaller probability chart
             fig, ax = plt.subplots(figsize=(6, 3))
@@ -196,3 +196,5 @@ if os.path.exists("temp_image.png"):
     except:
         pass
 
+
+    
