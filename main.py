@@ -17,7 +17,7 @@ st.set_page_config(
 
 # Title and description
 st.title("🔢 MNIST Classifier")
-st.caption("Upload is under Work! Upload or select a handwritten digit image for prediction")
+st.caption("Upload is under Work! Select a handwritten digit image from the library for prediction")
 
 # Custom CSS to make UI more compact
 st.markdown("""
