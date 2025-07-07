@@ -5,9 +5,9 @@ from PIL import Image, ImageDraw, ImageFont
 import os
 
 def create_sample_digit_image(digit, filename, size=(100, 100)):
-    """Create a simple image with a digit"""
-    # Create a white image
-    img = Image.new('RGB', size, color='white')
+    """Create a simple image with a digit that matches MNIST format"""
+    # Create a BLACK image (black background like MNIST)
+    img = Image.new('L', size, color=0)  # Use 'L' for grayscale, 0 = black
     draw = ImageDraw.Draw(img)
     
     # Try to use a default font, fallback to basic if not available
@@ -16,6 +16,7 @@ def create_sample_digit_image(digit, filename, size=(100, 100)):
         font = ImageFont.truetype("arial.ttf", 60)
     except:
         try:
+            # Try to load a default font
             font = ImageFont.load_default()
         except:
             font = None
@@ -31,8 +32,8 @@ def create_sample_digit_image(digit, filename, size=(100, 100)):
     x = (size[0] - text_width) // 2
     y = (size[1] - text_height) // 2
     
-    # Draw the digit in black
-    draw.text((x, y), str(digit), fill='black', font=font)
+    # Draw the digit in WHITE (white digits on black background like MNIST)
+    draw.text((x, y), str(digit), fill=255, font=font)  # 255 = white
     
     return img
 

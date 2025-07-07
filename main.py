@@ -59,30 +59,12 @@ with col1:
     st.subheader("📤 Image")
     
     # Add tabs for upload vs local library
-    tab1, tab2 = st.tabs(["Upload", "Library"])
+    tab1, tab2 = st.tabs(["Library", "Upload"])
     
     selected_image_path = None
     uploaded_file = None
     
     with tab1:
-        # File uploader
-        uploaded_file = st.file_uploader(
-            "Choose image file", 
-            type=['png', 'jpg', 'jpeg', 'bmp', 'tiff'],
-            help="Upload a handwritten digit image"
-        )
-        
-        if uploaded_file is not None:
-            # Display the uploaded image
-            image = Image.open(uploaded_file)
-            st.image(image, caption="Uploaded", width=200)
-            
-            # Save uploaded file temporarily for prediction
-            with open("temp_image.png", "wb") as f:
-                f.write(uploaded_file.getbuffer())
-            selected_image_path = "temp_image.png"
-    
-    with tab2:
         # Get images from local library
         sample_images_dir = "sample_images"
         if os.path.exists(sample_images_dir):
@@ -111,6 +93,24 @@ with col1:
                 st.warning("No sample images found.")
         else:
             st.warning("Sample images folder not found.")
+    
+    with tab2:
+        # File uploader
+        uploaded_file = st.file_uploader(
+            "Choose image file", 
+            type=['png', 'jpg', 'jpeg', 'bmp', 'tiff'],
+            help="Upload a handwritten digit image"
+        )
+        
+        if uploaded_file is not None:
+            # Display the uploaded image
+            image = Image.open(uploaded_file)
+            st.image(image, caption="Uploaded", width=200)
+            
+            # Save uploaded file temporarily for prediction
+            with open("temp_image.png", "wb") as f:
+                f.write(uploaded_file.getbuffer())
+            selected_image_path = "temp_image.png"
 with col2:
     st.subheader("🎯 Predictions")
     

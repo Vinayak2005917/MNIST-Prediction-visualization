@@ -1,8 +1,10 @@
 #Loading the MNIST MODEL
 import torch
 import torchvision.transforms as transforms
-from PIL import Image
+from PIL import Image, ImageOps
 import torch.nn as nn
+import numpy as np
+import numpy as np
 
 class MNISTNet(nn.Module):
     def __init__(self):
@@ -20,27 +22,37 @@ class MNISTNet(nn.Module):
         return x
     
 model = MNISTNet()
-model.load_state_dict(torch.load("mnist_model.pth"))
+model.load_state_dict(torch.load("mnist_model.pth", map_location=torch.device('cpu')))
 model.eval()
 print("Model loaded and ready for inference!")
 
-
+# Define the same transform used during training
 transform = transforms.Compose([
-    transforms.Grayscale(num_output_channels=1),  # ensure 1 channel
-    transforms.Resize((28, 28)),                  # resize if needed
+    transforms.Resize((28, 28)),
     transforms.ToTensor(),
     transforms.Normalize((0.1307,), (0.3081,))
 ])
 
 def predict_mnist_probabilities(image_path: str) -> str:
     try:
-        # Load and transform image
-        image = Image.open(image_path).convert("L")  # convert to grayscale
-        image = transform(image).unsqueeze(0)  # add batch dimension
-
-        # Get probabilities
+        # Load and convert image to grayscale
+        image = Image.open(image_path).convert("L")
+        
+        # Check if image needs inversion 
+        # MNIST has BLACK background with WHITE digits
+        img_array = np.array(image)
+        
+        # If the average pixel value is HIGH (white/light background), invert the image
+        # to match MNIST format (black background, white digits)
+        if np.mean(img_array) > 127:
+            image = ImageOps.invert(image)
+        
+        # Apply the same transformations used during training
+        image_tensor = transform(image).unsqueeze(0)  # Add batch dimension
+        
+        # Get predictions
         with torch.no_grad():
-            output = model(image)
+            output = model(image_tensor)
             probabilities = torch.softmax(output, dim=1).squeeze().tolist()
 
         # Create a string representation
